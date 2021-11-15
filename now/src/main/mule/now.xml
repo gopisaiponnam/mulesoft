@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="353d9bc3-ea79-4088-adcd-d00df420d3e6" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="nowFlow" doc:id="fdae5e1b-cdfa-45e5-9a86-9d9f1508859b" >
+		<http:listener doc:name="Listener" doc:id="3d9bf85b-281d-44c5-9ea0-ddd4e0be1c79" config-ref="HTTP_Listener_config" path="now"/>
+		<ee:transform doc:name="Transform Message" doc:id="9f7bfa30-9262-4153-ba65-ec7cb82eeb3d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var a = [{
+    "name":"siva", "age":"24","gender": "male"
+    }
+]
+---
+a map {
+    "name":($.name),
+    "gender":($$),
+    "age":($.age)
+}
+
+
+
+ ]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="c18e3f33-8ebc-4401-affb-2176f482fbec" message="#[payload]"/>
+	</flow>
+</mule>
